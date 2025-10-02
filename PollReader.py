@@ -100,13 +100,13 @@ class PollReader():
             tuple: A tuple containing the average polling percentages for Harris and Trump
                    among likely voters, in that order.
         """
-        harris_vals = [h for h, t in zip(self.data_dict['Harris result'], self.data_dict['sample type']) if t == "LV"]
-        trump_vals = [t for t, s in zip(self.data_dict['Trump result'], self.data_dict['sample type']) if s == "LV"]
+        harrisVal = [h for h, t in zip(self.data_dict['Harris result'], self.data_dict['sample type']) if t == "LV"]
+        trumpVal = [t for t, s in zip(self.data_dict['Trump result'], self.data_dict['sample type']) if s == "LV"]
 
-        harris_avg = sum(harris_vals) / len(harris_vals)
-        trump_avg = sum(trump_vals) / len(trump_vals)
+        harrisAvg = sum(harrisVal) / len(harrisVal)
+        trumpAvg = sum(trumpVal) / len(trumpVal)
 
-        return harris_avg, trump_avg
+        return harrisAvg, trumpAvg
 
 
     def polling_history_change(self):
@@ -120,7 +120,16 @@ class PollReader():
             tuple: A tuple containing the net change for Harris and Trump, in that order.
                    Positive values indicate an increase, negative values indicate a decrease.
         """
-        pass
+        harris = list(reversed(self.data_dict['Harris result']))
+        trump = list(reversed(self.data_dict['Trump result']))
+
+        harris_earliest = sum(harris[:30]) / 30
+        trump_earliest = sum(trump[:30]) / 30
+        harris_latest = sum(harris[-30:]) / 30
+        trump_latest = sum(trump[-30:]) / 30
+
+        return (harris_latest - harris_earliest, trump_latest - trump_earliest)
+
 
 
 class TestPollReader(unittest.TestCase):
