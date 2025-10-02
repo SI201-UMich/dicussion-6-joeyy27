@@ -55,16 +55,17 @@ class PollReader():
         """
 
         # iterate through each row of the data
-        for i in self.raw_data:
+        for i in range(1, len(self.raw_data)):
 
             # split up the row by column
-            seperated = i.split(' ')
+            seperated = self.raw_data[i].strip().split(',')
 
             # map each part of the row to the correct column
             self.data_dict['month'].append(seperated[0])
             self.data_dict['date'].append(int(seperated[1]))
-            self.data_dict['sample'].append(int(seperated[2]))
-            self.data_dict['sample type'].append(seperated[2])
+            sample_field = seperated[2].split()
+            self.data_dict['sample'].append(int(sample_field[0]))
+            self.data_dict['sample type'].append(sample_field[1])
             self.data_dict['Harris result'].append(float(seperated[3]))
             self.data_dict['Trump result'].append(float(seperated[4]))
 
@@ -89,7 +90,6 @@ class PollReader():
             return f"Trump {max_trump * 100:.1f}%"
         else:
             return f"EVEN {max_harris * 100:.1f}%"
-
 
 
     def likely_voter_polling_average(self):
@@ -129,7 +129,6 @@ class PollReader():
         trump_latest = sum(trump[-30:]) / 30
 
         return (harris_latest - harris_earliest, trump_latest - trump_earliest)
-
 
 
 class TestPollReader(unittest.TestCase):
